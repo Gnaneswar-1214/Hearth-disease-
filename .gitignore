@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+dataset.csv
+dataset.csv.csv
+dataset_README.txt
+test_dataset_tmp.csv
+test_model_tmp/
+.vscode/
+.kiro/

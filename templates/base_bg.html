@@ -1,0 +1,50 @@
+<!-- CSS Heart + ECG background — include inside <body> before content -->
+
+<!-- Anatomical heart SVG -->
+<svg id="bg-heart" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="hg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%"   stop-color="#c0392b" stop-opacity="1"/>
+      <stop offset="40%"  stop-color="#922b21" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a0505" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="hg2" cx="35%" cy="30%" r="30%">
+      <stop offset="0%"   stop-color="#e74c3c" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#922b21" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Main heart shape -->
+  <path d="M100 170 C60 140, 10 110, 10 65 C10 35, 35 15, 60 15 C75 15, 88 22, 100 35 C112 22, 125 15, 140 15 C165 15, 190 35, 190 65 C190 110, 140 140, 100 170Z"
+        fill="url(#hg)" filter="url(#glow)"/>
+  <!-- Highlight -->
+  <path d="M100 170 C60 140, 10 110, 10 65 C10 35, 35 15, 60 15 C75 15, 88 22, 100 35 C112 22, 125 15, 140 15 C165 15, 190 35, 190 65 C190 110, 140 140, 100 170Z"
+        fill="url(#hg2)"/>
+  <!-- Aorta -->
+  <path d="M85 35 C82 20, 75 10, 80 5 C85 0, 95 5, 100 15 C105 5, 115 0, 120 5 C125 10, 118 20, 115 35"
+        fill="#7b1a1a" stroke="#c0392b" stroke-width="1"/>
+  <!-- Veins -->
+  <path d="M60 80 Q70 90 65 110 M80 70 Q85 85 80 105 M120 70 Q115 85 120 105 M140 80 Q130 90 135 110"
+        stroke="#7b1a1a" stroke-width="1.5" fill="none" opacity="0.7"/>
+  <!-- Bright highlight spot -->
+  <ellipse cx="75" cy="60" rx="18" ry="12" fill="#e74c3c" opacity="0.25"/>
+</svg>
+
+<!-- ECG line SVG -->
+<svg id="bg-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="ecg-glow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Left flat line -->
+  <path class="ecg-path" d="M0,60 L180,60 L200,60 L210,58 L215,55 L220,20 L225,100 L230,60 L240,60 L250,58 L255,40 L260,60 L280,60 L300,60 L310,58 L315,55 L320,20 L325,100 L330,60 L340,60 L350,58 L355,40 L360,60 L400,60 L420,60 L430,58 L435,55 L440,20 L445,100 L450,60 L460,60 L470,58 L475,40 L480,60 L520,60 L540,60 L550,58 L555,55 L560,20 L565,100 L570,60 L580,60 L590,58 L595,40 L600,60 L640,60 L660,60 L670,58 L675,55 L680,20 L685,100 L690,60 L700,60 L710,58 L715,40 L720,60 L760,60 L780,60 L790,58 L795,55 L800,20 L805,100 L810,60 L820,60 L830,58 L835,40 L840,60 L880,60 L900,60 L910,58 L915,55 L920,20 L925,100 L930,60 L940,60 L950,58 L955,40 L960,60 L1000,60 L1020,60 L1030,58 L1035,55 L1040,20 L1045,100 L1050,60 L1060,60 L1070,58 L1075,40 L1080,60 L1200,60"
+        stroke="#ff2d2d" stroke-width="1.8" fill="none" filter="url(#ecg-glow)"/>
+  <!-- White highlight on peaks -->
+  <path d="M220,20 L225,100 M320,20 L325,100 M440,20 L445,100 M560,20 L565,100 M680,20 L685,100 M800,20 L805,100 M920,20 L925,100 M1040,20 L1045,100"
+        stroke="rgba(255,255,255,0.6)" stroke-width="0.8" fill="none"/>
+</svg>

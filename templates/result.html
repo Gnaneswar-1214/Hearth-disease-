@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result — Heart Disease</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% include 'base_bg.html' %}
+
+    <div class="card result-card">
+        <span class="hero-icon">{{ '❤️‍🩹' if prediction == 1 else '💚' }}</span>
+
+        <span class="result-badge {{ 'badge-disease' if prediction == 1 else 'badge-safe' }}">
+            {{ '⚠️ Risk Detected' if prediction == 1 else '✅ Low Risk' }}
+        </span>
+
+        <h1 class="{{ 'disease' if prediction == 1 else 'safe' }}">{{ label }}</h1>
+
+        <p class="probability-text">Risk Probability</p>
+        <div class="probability-number
+            {%- if probability_pct >= 70 %} prob-disease
+            {%- elif probability_pct >= 40 %} prob-mid
+            {%- else %} prob-safe{%- endif %}">
+            {{ probability_pct }}%
+        </div>
+
+        <div class="progress-bar-container" aria-label="Risk level {{ probability_pct }}%">
+            <div class="progress-bar
+                {%- if probability_pct >= 70 %} high-risk
+                {%- elif probability_pct >= 40 %} mid-risk
+                {%- else %} low-risk{%- endif %}"
+                 style="width: {{ probability_pct }}%">
+            </div>
+        </div>
+
+        <p class="risk-label">
+            {% if probability_pct >= 70 %}⚠️ High Risk
+            {% elif probability_pct >= 40 %}🟡 Moderate Risk
+            {% else %}✅ Low Risk
+            {% endif %}
+        </p>
+
+        <div class="result-advice">
+            {% if prediction == 1 %}
+            🏥 <strong>Action needed:</strong> Please consult a cardiologist promptly. This AI result is based on statistical patterns and is not a clinical diagnosis.
+            {% else %}
+            🥗 <strong>Looking good:</strong> Your indicators suggest low cardiovascular risk. Keep up healthy habits and schedule regular check-ups.
+            {% endif %}
+        </div>
+
+        <button class="btn-secondary" id="diet-btn" onclick="toggleDiet()">
+            🥦 View Suggested Diet Plan
+        </button>
+
+        <div class="diet-panel" id="diet-panel">
+            <h2>🍽️ Personalised Diet Plan
+                <span style="font-size:0.7rem;font-weight:500;color:var(--text-muted);margin-left:auto;">
+                    Age {{ age }} · {{ probability_pct }}% risk
+                </span>
+            </h2>
+            <div class="diet-cols">
+                <div class="diet-box eat">
+                    <h3>✅ Eat More</h3>
+                    <ul id="eat-list"></ul>
+                </div>
+                <div class="diet-box avoid">
+                    <h3>🚫 Avoid</h3>
+                    <ul id="avoid-list"></ul>
+                </div>
+            </div>
+            <p class="diet-note" id="diet-note"></p>
+        </div>
+
+        <div class="divider"></div>
+        <a href="/predict" class="btn-primary">🔄 Check Again</a>
+    </div>
+
+    <script>
+    const age = {{ age }};
+    const riskPct = {{ probability_pct }};
+
+    function getDietPlan(age, riskPct) {
+        let eat = [], avoid = [], note = '';
+
+        if (age < 40) {
+            eat = ['Oats & whole grain bread','Leafy greens (spinach, kale)','Berries & citrus fruits','Fatty fish 2×/week (salmon)','Almonds, walnuts, flaxseeds','Low-fat dairy or plant milk','Lentils & chickpeas','Olive oil for cooking'];
+            avoid = ['Sugary drinks & energy drinks','Fast food & deep-fried snacks','Processed meats (sausages)','Excessive alcohol','White bread & refined carbs','High-sodium packaged foods'];
+            note = '💡 Under 40: Building heart-healthy habits now dramatically reduces long-term risk. Focus on whole foods and stay active 30 min/day.';
+        } else if (age < 55) {
+            eat = ['Oats, quinoa & barley','Dark leafy vegetables daily','Avocado (healthy fats)','Fatty fish 3×/week (omega-3)','Walnuts, chia seeds','Garlic & turmeric (anti-inflammatory)','Beans, lentils, tofu','Green tea (antioxidants)','Low-sodium vegetable soups'];
+            avoid = ['Red meat more than 2×/week','Full-fat dairy (butter, cream)','Fried foods & trans fats','Sugary desserts & sweets','Processed & canned foods','Alcohol (limit strictly)','White rice & refined flour'];
+            note = '💡 Ages 40–55: Cholesterol and BP management is critical. Prioritise omega-3s, fibre, and potassium-rich foods.';
+        } else {
+            eat = ['Soft-cooked vegetables','Oatmeal with berries','Steamed fish (salmon, sardines)','Low-sodium soups & stews','Bananas, oranges (potassium)','Low-fat yogurt (probiotic)','Olive oil & avocado','Whole grain bread','Herbal teas (chamomile, green)'];
+            avoid = ['High-sodium foods (pickles, soy sauce)','Red & processed meats','Fried & greasy foods','Sugary foods & desserts','Alcohol & excess caffeine','Hard cheeses & full-fat dairy','Large heavy meals'];
+            note = '💡 Over 55: Focus on portion control, sodium reduction (<1500mg/day), and potassium-rich foods for heart & kidney health.';
+        }
+
+        if (riskPct >= 70) {
+            eat.unshift('🫐 Blueberries daily (antioxidants)');
+            eat.push('Dark chocolate >70% cocoa (small)');
+            avoid.unshift('🧂 Salt — strictly <1500mg/day');
+            avoid.push('Caffeine — max 1 cup coffee/day');
+            note = '⚠️ HIGH RISK: Follow a strict cardiac diet. Consult a registered dietitian alongside your cardiologist. ' + note;
+        } else if (riskPct >= 40) {
+            eat.push('Pomegranate juice (unsweetened)');
+            avoid.push('Skipping meals — eat regularly');
+            note = '🟡 MODERATE RISK: Dietary changes now can significantly reduce your risk. ' + note;
+        }
+
+        return { eat, avoid, note };
+    }
+
+    function toggleDiet() {
+        const panel = document.getElementById('diet-panel');
+        const btn = document.getElementById('diet-btn');
+
+        if (panel.classList.contains('visible')) {
+            panel.classList.remove('visible');
+            btn.textContent = '🥦 View Suggested Diet Plan';
+            return;
+        }
+
+        const { eat, avoid, note } = getDietPlan(age, riskPct);
+        document.getElementById('eat-list').innerHTML = eat.map(i => `<li>${i}</li>`).join('');
+        document.getElementById('avoid-list').innerHTML = avoid.map(i => `<li>${i}</li>`).join('');
+        document.getElementById('diet-note').textContent = note;
+
+        panel.classList.add('visible');
+        btn.textContent = '✕ Hide Diet Plan';
+        setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+    </script>
+</body>
+</html>

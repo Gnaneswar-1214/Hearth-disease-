@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction — Enter Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% include 'base_bg.html' %}
+
+    <div class="card form-card">
+        <div style="text-align:center; margin-bottom:1.5rem;">
+            <span class="hero-icon">🩺</span>
+            <h1>Medical Details Form</h1>
+            <p class="page-subtitle">Fill in all fields accurately for the best prediction result</p>
+        </div>
+
+        {% if error %}
+        <div class="error-banner">⚠️ {{ error }}</div>
+        {% endif %}
+
+        <form id="predict-form" method="POST" action="/predict" novalidate>
+
+            <!-- Section 1: Personal Info -->
+            <div class="form-section">
+                <div class="section-title">👤 Personal Information</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="age"><span class="field-icon">🎂</span> Age</label>
+                        <input type="number" id="age" name="age" placeholder="e.g. 52" min="1" max="120"
+                               value="{{ request.form.get('age', '') }}">
+                        <span class="hint">Your age in years (29–77)</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="sex"><span class="field-icon">⚧</span> Sex</label>
+                        <select id="sex" name="sex">
+                            <option value="" disabled {% if not request.form.get('sex') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('sex') == '0' %}selected{% endif %}>0 — Female</option>
+                            <option value="1" {% if request.form.get('sex') == '1' %}selected{% endif %}>1 — Male</option>
+                        </select>
+                        <span class="hint">Biological sex</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Cardiac Symptoms -->
+            <div class="form-section">
+                <div class="section-title">💓 Cardiac Symptoms</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cp"><span class="field-icon">😣</span> Chest Pain Type</label>
+                        <select id="cp" name="cp">
+                            <option value="" disabled {% if not request.form.get('cp') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('cp') == '0' %}selected{% endif %}>0 — Typical Angina</option>
+                            <option value="1" {% if request.form.get('cp') == '1' %}selected{% endif %}>1 — Atypical Angina</option>
+                            <option value="2" {% if request.form.get('cp') == '2' %}selected{% endif %}>2 — Non-anginal Pain</option>
+                            <option value="3" {% if request.form.get('cp') == '3' %}selected{% endif %}>3 — Asymptomatic</option>
+                        </select>
+                        <span class="hint">Type of chest pain experienced</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="exang"><span class="field-icon">🏃</span> Exercise Induced Angina</label>
+                        <select id="exang" name="exang">
+                            <option value="" disabled {% if not request.form.get('exang') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('exang') == '0' %}selected{% endif %}>0 — No</option>
+                            <option value="1" {% if request.form.get('exang') == '1' %}selected{% endif %}>1 — Yes</option>
+                        </select>
+                        <span class="hint">Chest pain triggered by exercise</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="thalach"><span class="field-icon">💗</span> Max Heart Rate</label>
+                        <input type="number" id="thalach" name="thalach" placeholder="e.g. 150" min="60" max="220"
+                               value="{{ request.form.get('thalach', '') }}">
+                        <span class="hint">Maximum heart rate achieved (bpm)</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="oldpeak"><span class="field-icon">📉</span> ST Depression (Oldpeak)</label>
+                        <input type="number" step="0.1" id="oldpeak" name="oldpeak" placeholder="e.g. 1.5"
+                               value="{{ request.form.get('oldpeak', '') }}">
+                        <span class="hint">ST depression induced by exercise</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="slope"><span class="field-icon">📈</span> Slope of ST Segment</label>
+                        <select id="slope" name="slope">
+                            <option value="" disabled {% if not request.form.get('slope') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('slope') == '0' %}selected{% endif %}>0 — Upsloping</option>
+                            <option value="1" {% if request.form.get('slope') == '1' %}selected{% endif %}>1 — Flat</option>
+                            <option value="2" {% if request.form.get('slope') == '2' %}selected{% endif %}>2 — Downsloping</option>
+                        </select>
+                        <span class="hint">Slope of peak exercise ST segment</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="ca"><span class="field-icon">🔬</span> Major Vessels (CA)</label>
+                        <select id="ca" name="ca">
+                            <option value="" disabled {% if not request.form.get('ca') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('ca') == '0' %}selected{% endif %}>0</option>
+                            <option value="1" {% if request.form.get('ca') == '1' %}selected{% endif %}>1</option>
+                            <option value="2" {% if request.form.get('ca') == '2' %}selected{% endif %}>2</option>
+                            <option value="3" {% if request.form.get('ca') == '3' %}selected{% endif %}>3</option>
+                            <option value="4" {% if request.form.get('ca') == '4' %}selected{% endif %}>4</option>
+                        </select>
+                        <span class="hint">Number of major vessels (fluoroscopy)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Vitals & Lab Results -->
+            <div class="form-section">
+                <div class="section-title">🧪 Vitals &amp; Lab Results</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="trestbps"><span class="field-icon">🩸</span> Resting Blood Pressure</label>
+                        <input type="number" id="trestbps" name="trestbps" placeholder="e.g. 130" min="80" max="220"
+                               value="{{ request.form.get('trestbps', '') }}">
+                        <span class="hint">Resting BP in mm Hg</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="chol"><span class="field-icon">🧬</span> Serum Cholesterol</label>
+                        <input type="number" id="chol" name="chol" placeholder="e.g. 250" min="100" max="600"
+                               value="{{ request.form.get('chol', '') }}">
+                        <span class="hint">Cholesterol level in mg/dl</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="fbs"><span class="field-icon">🍬</span> Fasting Blood Sugar</label>
+                        <select id="fbs" name="fbs">
+                            <option value="" disabled {% if not request.form.get('fbs') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('fbs') == '0' %}selected{% endif %}>0 — ≤ 120 mg/dl (Normal)</option>
+                            <option value="1" {% if request.form.get('fbs') == '1' %}selected{% endif %}>1 — &gt; 120 mg/dl (High)</option>
+                        </select>
+                        <span class="hint">Fasting blood sugar &gt; 120 mg/dl?</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="restecg"><span class="field-icon">📋</span> Resting ECG Results</label>
+                        <select id="restecg" name="restecg">
+                            <option value="" disabled {% if not request.form.get('restecg') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('restecg') == '0' %}selected{% endif %}>0 — Normal</option>
+                            <option value="1" {% if request.form.get('restecg') == '1' %}selected{% endif %}>1 — ST-T Wave Abnormality</option>
+                            <option value="2" {% if request.form.get('restecg') == '2' %}selected{% endif %}>2 — Left Ventricular Hypertrophy</option>
+                        </select>
+                        <span class="hint">Resting electrocardiographic results</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="thal"><span class="field-icon">🫀</span> Thalassemia (Thal)</label>
+                        <select id="thal" name="thal">
+                            <option value="" disabled {% if not request.form.get('thal') %}selected{% endif %}>Select...</option>
+                            <option value="0" {% if request.form.get('thal') == '0' %}selected{% endif %}>0 — Normal</option>
+                            <option value="1" {% if request.form.get('thal') == '1' %}selected{% endif %}>1 — Fixed Defect</option>
+                            <option value="2" {% if request.form.get('thal') == '2' %}selected{% endif %}>2 — Reversible Defect</option>
+                            <option value="3" {% if request.form.get('thal') == '3' %}selected{% endif %}>3 — Unknown</option>
+                        </select>
+                        <span class="hint">Blood disorder type</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-row">
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span id="btn-text">🔍 Analyze &amp; Predict</span>
+                    <span id="spinner" class="spinner hidden"></span>
+                </button>
+                <p class="submit-note">🔒 Your data is processed locally and never stored</p>
+            </div>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

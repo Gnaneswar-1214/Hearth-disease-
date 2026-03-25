@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% include 'base_bg.html' %}
+
+    <div class="card">
+        <span class="hero-icon">❤️</span>
+        <h1>Heart Disease<br>Prediction System</h1>
+        <p class="description">
+            Enter your clinical details and get an instant AI-powered assessment
+            of your cardiovascular risk — powered by a Random Forest model
+            trained on real patient data.
+        </p>
+        <div class="stats-row">
+            <span class="stat-chip">🎯 98.5% Accuracy</span>
+            <span class="stat-chip">🧬 13 Features</span>
+            <span class="stat-chip">🥗 Diet Advice</span>
+            <span class="stat-chip">⚡ Instant</span>
+        </div>
+        <div class="divider"></div>
+        <a href="/predict" class="btn-primary">🩺 Start Prediction</a>
+    </div>
+</body>
+</html>
